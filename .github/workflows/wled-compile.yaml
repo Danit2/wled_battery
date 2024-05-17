@@ -33,20 +33,21 @@ jobs:
         echo 'extends = env:esp32c3dev' >>platformio.ini
         echo 'build_flags = ${env:esp32c3dev.build_flags} -D USERMOD_BATTERY' >>platformio.ini
         
+        echo 'build_unflags= -D WLED_RELEASE_NAME' >>platformio.ini
         pio run -e custom_build || pio run -e custom_build
     - name: Copy Files
       run: |
         cd $GITHUB_WORKSPACE
         git rm -r $GITHUB_WORKSPACE/*.bin || true
         WLEDFOLDERNAME=`cat /tmp/WLEDtemp/wledfoldername`
-        cp ${WLEDFOLDERNAME}/build_output/release/WLED_0.15.0-b2_ESP32-C3.bin $GITHUB_WORKSPACE/
+        cp ${WLEDFOLDERNAME}/build_output/firmware/custom_build.bin $GITHUB_WORKSPACE/
         date -I | tr -d '\n' >$GITHUB_WORKSPACE/last_update_date.txt
     - name: Commit Files
       run: |
         cd $GITHUB_WORKSPACE
         git config user.name "GitHub Actions Bot"
         git config user.email "<>"
-        git add $GITHUB_WORKSPACE/WLED_0.15.0-b2_ESP32-C3.bin
+        git add $GITHUB_WORKSPACE/custom_build.bin
         git add $GITHUB_WORKSPACE/last_update_date.txt
         git commit -m "Commit Custom Build"
         git push origin main
