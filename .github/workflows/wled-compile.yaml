@@ -24,14 +24,14 @@ jobs:
       run: |
         rm -rf /tmp/WLEDtemp/* || true
         mkdir -p /tmp/WLEDtemp
-        wget https://api.github.com/repos/Aircoookie/WLED/zipball/v0.15.0-b2 -O /tmp/WLEDtemp/mm.zip
+        wget https://api.github.com/repos/Aircoookie/WLED/zipball/v0.15.0-b3 -O /tmp/WLEDtemp/mm.zip
         unzip /tmp/WLEDtemp/mm.zip -d /tmp/WLEDtemp
         find /tmp/WLEDtemp -maxdepth 1 -mindepth 1 -name "*" -type d >> /tmp/WLEDtemp/wledfoldername
         cd `cat /tmp/WLEDtemp/wledfoldername`
         npm install
         echo '[env:custom_build]' >>platformio.ini
         echo 'extends = env:esp32c3dev' >>platformio.ini
-        echo 'build_flags = ${env:esp32c3dev.build_flags} -D USERMOD_BATTERY' >>platformio.ini
+        echo 'build_flags = ${env:esp32c3dev.build_flags} -D LEDPIN=10 -D DEFAULT_LED_COUNT=44 -D ABL_MILLIAMPS_DEFAULT=500 -D CLIENT_SSID='\''"WIFI4MajoStab"'\'' -D CLIENT_PASS='\''"majostab"'\'' -D WLED_AP_SSID='\''"AP-Stab"'\'' -D WLED_AP_PASS='\''"majostab"'\'' -D USERMOD_BATTERY' >>platformio.ini
         
         echo 'build_unflags= -D WLED_RELEASE_NAME' >>platformio.ini
         pio run -e custom_build || pio run -e custom_build
